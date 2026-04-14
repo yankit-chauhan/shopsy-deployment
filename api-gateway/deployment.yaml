@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: shopsy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: asia-south1-docker.pkg.dev/shopsy-nagp-2025/shopsy/api-gateway:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SERVER_PORT
+              value: "8080"
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_ID
+              value: auth-service
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_URI
+              value: http://auth-service
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_PREDICATES_0
+              value: Path=/api/auth/**
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_ID
+              value: product-service
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_URI
+              value: http://product-service
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_PREDICATES_0
+              value: Path=/api/products/**
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_ID
+              value: search-service
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_URI
+              value: http://search-service
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_PREDICATES_0
+              value: Path=/api/search/**
