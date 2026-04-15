@@ -4,8 +4,13 @@ metadata:
   name: shopsy-ingress
   namespace: shopsy
 spec:
-  defaultBackend:
-    service:
-      name: api-gateway
-      port:
-        number: 80
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  number: 80

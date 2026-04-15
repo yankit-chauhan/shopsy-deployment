@@ -8,35 +8,58 @@ spec:
   selector:
     matchLabels:
       app: api-gateway
+
   template:
     metadata:
       labels:
         app: api-gateway
+
     spec:
       containers:
         - name: api-gateway
+
           image: asia-south1-docker.pkg.dev/shopsy-nagp-2025/shopsy/api-gateway:latest
+
           imagePullPolicy: Always
+
           ports:
             - containerPort: 8080
+
           env:
             - name: SERVER_PORT
               value: "8080"
-            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_ID
-              value: auth-service
-            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_URI
-              value: http://auth-service
-            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_PREDICATES_0
-              value: Path=/api/auth/**
-            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_ID
-              value: product-service
-            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_URI
-              value: http://product-service
-            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_PREDICATES_0
-              value: Path=/api/products/**
-            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_ID
-              value: search-service
-            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_URI
-              value: http://search-service
-            - name: SPRING_CLOUD_GATEWAY_ROUTES_2_PREDICATES_0
-              value: Path=/api/search/**
+
+            - name: AUTH_SERVICE_URL
+              value: http://auth-service:80
+
+            - name: PRODUCT_SERVICE_URL
+              value: http://product-service:80
+
+            - name: SEARCH_SERVICE_URL
+              value: http://search-service:80
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"

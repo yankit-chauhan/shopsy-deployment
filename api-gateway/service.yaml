@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: api-gateway
   namespace: shopsy
+  annotations:
+    cloud.google.com/backend-config: '{"default": "api-gateway-backendconfig"}'
 spec:
   type: ClusterIP
   selector:
