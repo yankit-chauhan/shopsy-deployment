@@ -7,6 +7,7 @@ kubectl apply -f product-service/
 kubectl apply -f search-service/
 kubectl apply -f auth-service/
 kubectl apply -f api-gateway/
+kubectl apply -f frontend/
 kubectl apply -f ingress.yaml
 kubectl get all -n shopsy
 kubectl get ingress -n shopsy

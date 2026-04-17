@@ -18,6 +18,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: api-gateway
+                name: shopsy-frontend
                 port:
                   number: 80
